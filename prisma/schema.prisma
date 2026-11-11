@@ -1,8 +1,6 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
   provider = "prisma-client"
   output   = "../src/generated/prisma"
@@ -11,3 +9,68 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+
+model User {
+  id            Int      @id @default(autoincrement())
+  nome          String
+  email         String   @unique
+  password      String
+  data_cadastro DateTime @default(now())
+  tipo_usuario  String 
+  
+
+  paginas       pagina[] 
+}
+
+model pagina {
+  id_pagina Int @id @default(autoincrement())
+  titulo String 
+  Data_criacao DateTime @default(now())
+  Data_atualizacao DateTime
+  Status String
+  fk_id_usuario Int 
+  
+  categoria categoria_pagina[]
+
+
+  usuario User @relation(fields: [fk_id_usuario], references: [id])
+}
+
+model categoria_pagina {
+  
+  id_categoria Int @id
+  fk_id_pagina Int 
+
+  pagina pagina @relation(fields: [fk_id_pagina], references: [id_pagina])
+
+}
+
+model categoria {
+  id_categoria Int @id
+  nome_categoria String
+  descricao String 
+}
+
+model curso {
+  id_curso Int @id
+  nome String
+  modalidade String
+  nivel Int 
+  descricao String
+  fk_id_pagina Int
+
+  curso pagina @relation(fields: [fk_id_pagina], references: [id_pagina])
+}
+
+model professor {
+  id_professor Int @id 
+  nome String
+  area_atuacao String
+  email_institucional String
+  fk_id_pagina Int
+
+  professor pagina @relation(fields: [fk_id_pagina] references: [id_pagina])
+}
+
+model projeto 
+
